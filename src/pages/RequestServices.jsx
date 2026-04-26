@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
-import { CheckCircle, User, Check, ArrowRight, ArrowLeft } from 'lucide-react';
+import { CheckCircle, User } from 'lucide-react';
 
 const REASONS = [
   'Addiction & Substance Use',
@@ -125,10 +125,8 @@ export default function RequestServices() {
                   <span className="w-6 h-6 rounded-full border-2 border-primary-foreground/60 flex items-center justify-center text-xs font-bold">1</span>
                   <User className="w-4 h-4" /> Patient Details
                 </div>
-                <div className={`flex items-center gap-2 text-sm font-body font-semibold ${step === 2 ? 'text-primary-foreground' : 'text-primary-foreground/60'}`}>
-                  <span className="w-6 h-6 rounded-full border-2 border-primary-foreground/60 flex items-center justify-center">
-                    {step === 2 ? <Check className="w-3 h-3" /> : '✓'}
-                  </span>
+                <div className="flex items-center gap-2 text-sm font-body font-semibold text-primary-foreground/60">
+                  <span className="w-6 h-6 rounded-full border-2 border-primary-foreground/60 flex items-center justify-center">✓</span>
                   Complete
                 </div>
               </div>
@@ -142,22 +140,6 @@ export default function RequestServices() {
               {step === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
                   className="bg-card border border-border rounded-b-xl p-6 lg:p-10">
-
-                  {/* Patient Toggle */}
-                  <div className="flex gap-3 mb-8">
-                    <button
-                      onClick={() => set('is_patient', true)}
-                      className={`px-5 py-2.5 rounded-md text-sm font-body font-semibold border transition-all ${form.is_patient ? 'bg-primary text-primary-foreground border-primary' : 'bg-card text-foreground border-border hover:border-primary/50'}`}
-                    >
-                      I am the Patient
-                    </button>
-                    <button
-                      onClick={() => set('is_patient', false)}
-                      className={`px-5 py-2.5 rounded-md text-sm font-body font-semibold border transition-all ${!form.is_patient ? 'bg-primary text-primary-foreground border-primary' : 'bg-card text-foreground border-border hover:border-primary/50'}`}
-                    >
-                      I am NOT the Patient
-                    </button>
-                  </div>
 
                   {/* Reason for Visit */}
                   <FieldRow label="Reason for Visit" required>
@@ -280,25 +262,6 @@ export default function RequestServices() {
                     <Textarea placeholder="Type your comments here" value={form.additional_details} onChange={e => set('additional_details', e.target.value)} rows={5} />
                   </FieldRow>
 
-                  {/* Buttons */}
-                  <div className="flex justify-between mt-8 pt-4">
-                    <div />
-                    <Button onClick={() => setStep(2)} disabled={!canProceedStep1}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-body font-semibold rounded-full px-8 min-h-[48px]">
-                      Next <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Step 2 - Review & Submit */}
-              {step === 2 && (
-                <motion.form key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                  onSubmit={handleSubmit}
-                  className="bg-card border border-border rounded-b-xl p-6 lg:p-10">
-
-                  <h2 className="font-display text-xl text-foreground mb-6">Review & Confirm</h2>
-
                   {/* Safety Questions */}
                   <FieldRow label="Thoughts of suicide?" required>
                     <Select value={form.thoughts_of_suicide} onValueChange={v => set('thoughts_of_suicide', v)}>
@@ -320,30 +283,14 @@ export default function RequestServices() {
                     </Select>
                   </FieldRow>
 
-                  {/* Summary */}
-                  <div className="bg-muted/50 rounded-xl p-5 border border-border mt-4 mb-6 space-y-2">
-                    <h3 className="font-display text-base text-foreground mb-3">Summary</h3>
-                    <div className="grid sm:grid-cols-2 gap-2 text-sm font-body">
-                      <div><span className="text-muted-foreground">Name: </span><span className="font-semibold">{form.first_name} {form.last_name}</span></div>
-                      <div><span className="text-muted-foreground">Phone: </span><span className="font-semibold">{form.phone}</span></div>
-                      <div><span className="text-muted-foreground">Email: </span><span className="font-semibold">{form.email}</span></div>
-                      <div><span className="text-muted-foreground">Insurance: </span><span className="font-semibold">{form.insurance_provider || '—'}</span></div>
-                      {form.reasons_for_visit.length > 0 && (
-                        <div className="sm:col-span-2"><span className="text-muted-foreground">Reasons: </span><span className="font-semibold">{form.reasons_for_visit.join(', ')}</span></div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <Button type="button" onClick={() => setStep(1)} variant="outline" className="rounded-full px-8 min-h-[48px] font-body">
-                      <ArrowLeft className="mr-2 w-4 h-4" /> Back
-                    </Button>
-                    <Button type="submit" disabled={!canSubmit || sending}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-body font-semibold rounded-full px-8 min-h-[48px]">
+                  {/* Submit */}
+                  <div className="flex justify-end mt-8 pt-4">
+                    <Button onClick={handleSubmit} disabled={!canSubmit || sending}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-body font-semibold rounded-full px-10 min-h-[48px]">
                       {sending ? 'Submitting...' : 'Submit Form'}
                     </Button>
                   </div>
-                </motion.form>
+                </motion.div>
               )}
             </AnimatePresence>
           </>
