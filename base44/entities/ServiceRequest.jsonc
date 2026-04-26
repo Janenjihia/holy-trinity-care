@@ -2,6 +2,18 @@
   "name": "ServiceRequest",
   "type": "object",
   "properties": {
+    "is_patient": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is the submitter the patient?"
+    },
+    "reasons_for_visit": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Reasons for visit (checkboxes)"
+    },
     "first_name": {
       "type": "string",
       "description": "First name"
@@ -13,19 +25,29 @@
     "date_of_birth": {
       "type": "string",
       "format": "date",
-      "description": "Date of birth"
+      "description": "Birthday"
     },
-    "email": {
+    "birth_sex": {
       "type": "string",
-      "description": "Email address"
-    },
-    "phone": {
-      "type": "string",
-      "description": "Phone number"
+      "enum": [
+        "Male",
+        "Female",
+        "Other",
+        "Prefer not to say"
+      ],
+      "description": "Birth sex"
     },
     "street_address": {
       "type": "string",
       "description": "Street address"
+    },
+    "apt": {
+      "type": "string",
+      "description": "Apartment number"
+    },
+    "zip_code": {
+      "type": "string",
+      "description": "Zip code"
     },
     "city": {
       "type": "string",
@@ -35,49 +57,45 @@
       "type": "string",
       "description": "State"
     },
-    "zip_code": {
+    "phone": {
       "type": "string",
-      "description": "Zip code"
+      "description": "Phone number"
     },
-    "insurance_provider": {
+    "email": {
       "type": "string",
-      "description": "Insurance provider"
+      "description": "Email address"
     },
-    "member_id": {
+    "preferred_language": {
       "type": "string",
-      "description": "Insurance member ID"
+      "description": "Preferred language"
+    },
+    "referring_provider": {
+      "type": "string",
+      "description": "Referring provider/entity"
     },
     "primary_care_physician": {
       "type": "string",
-      "description": "Primary care physician"
+      "description": "Primary care provider name"
     },
-    "emergency_contact_name": {
+    "insurance_provider": {
       "type": "string",
-      "description": "Emergency contact name"
+      "description": "Primary insurance"
     },
-    "emergency_contact_phone": {
+    "member_id": {
       "type": "string",
-      "description": "Emergency contact phone"
+      "description": "Insurance ID"
     },
-    "reason_for_visit": {
+    "additional_insurance": {
       "type": "string",
-      "description": "Reason for visit"
+      "description": "Additional insurance (secondary)"
     },
-    "current_medications": {
+    "how_did_you_hear": {
       "type": "string",
-      "description": "Current medications and dosages"
+      "description": "How did you hear about us?"
     },
-    "medical_history": {
+    "additional_details": {
       "type": "string",
-      "description": "Medical history"
-    },
-    "psychiatric_history": {
-      "type": "string",
-      "description": "Psychiatric history"
-    },
-    "substance_use_history": {
-      "type": "string",
-      "description": "Substance use history"
+      "description": "Additional details about reason for visit"
     },
     "thoughts_of_suicide": {
       "type": "string",
@@ -94,10 +112,6 @@
         "Yes"
       ],
       "description": "Currently having thoughts of harming others"
-    },
-    "additional_notes": {
-      "type": "string",
-      "description": "Additional notes"
     },
     "terms_accepted": {
       "type": "boolean",
@@ -121,9 +135,6 @@
     "last_name",
     "email",
     "phone",
-    "reason_for_visit",
-    "thoughts_of_suicide",
-    "thoughts_of_harming_others",
     "terms_accepted"
   ]
 }

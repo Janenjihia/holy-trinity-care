@@ -1,33 +1,81 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import IntakeTermsGate from '../components/intake/IntakeTermsGate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
-import { Send, CheckCircle } from 'lucide-react';
+import { CheckCircle, User, Check, ArrowRight, ArrowLeft } from 'lucide-react';
+
+const REASONS = [
+  'Addiction & Substance Use',
+  'Drug & Alcohol Education',
+  'Support & Stabilization Services (S&S)',
+  'In Home Therapy (IHT)',
+  'Structured Outpatient Addiction Program (SOAP)',
+  'Medication Management',
+  'Medication-Assisted Treatment (MAT)',
+  'Outpatient Service',
+  'Mental or Substance Eval (MSE)',
+  'Therapeutic Mentor (TM)',
+  'Residential Recovery Home',
+];
+
+const LANGUAGES = ['English', 'Spanish', 'Portuguese', 'French', 'Haitian Creole', 'Other'];
+const INSURANCE = [
+  'Blue Cross Blue Shield', 'Aetna', 'United Healthcare', 'Cigna', 'Humana',
+  'Medicaid', 'Medicare', 'Tufts Health Plan', 'Harvard Pilgrim', 'Self-Pay', 'Other',
+];
+const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+
+const initialForm = {
+  is_patient: true,
+  reasons_for_visit: [],
+  first_name: '', last_name: '', date_of_birth: '', birth_sex: '',
+  street_address: '', apt: '', zip_code: '', city: '', state: '',
+  phone: '', email: '', preferred_language: 'English',
+  referring_provider: '', primary_care_physician: '',
+  insurance_provider: '', member_id: '', additional_insurance: '',
+  how_did_you_hear: '', additional_details: '',
+  thoughts_of_suicide: 'No', thoughts_of_harming_others: 'No',
+  terms_accepted: true,
+};
+
+function FieldRow({ label, required, children }) {
+  return (
+    <div className="grid sm:grid-cols-[220px_1fr] gap-2 sm:gap-6 items-start py-3 border-b border-border last:border-0">
+      <Label className="font-body text-sm text-foreground pt-2.5 text-right hidden sm:block">
+        {label}{required && <span className="text-destructive ml-1">*</span>}
+      </Label>
+      <Label className="font-body text-sm text-foreground sm:hidden">
+        {label}{required && <span className="text-destructive ml-1">*</span>}
+      </Label>
+      <div>{children}</div>
+    </div>
+  );
+}
 
 export default function RequestServices() {
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [step, setStep] = useState(1);
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState(initialForm);
 
-  const [form, setForm] = useState({
-    first_name: '', last_name: '', date_of_birth: '', email: '', phone: '',
-    street_address: '', city: '', state: '', zip_code: '',
-    insurance_provider: '', member_id: '', primary_care_physician: '',
-    emergency_contact_name: '', emergency_contact_phone: '',
-    reason_for_visit: '', current_medications: '', medical_history: '',
-    psychiatric_history: '', substance_use_history: '',
-    thoughts_of_suicide: '', thoughts_of_harming_others: '',
-    additional_notes: '', terms_accepted: true,
-  });
+  const set = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
-  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  const handleSelect = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+  const toggleReason = (reason) => {
+    setForm(prev => {
+      const reasons = prev.reasons_for_visit.includes(reason)
+        ? prev.reasons_for_visit.filter(r => r !== reason)
+        : [...prev.reasons_for_visit, reason];
+      return { ...prev, reasons_for_visit: reasons };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,8 +86,8 @@ export default function RequestServices() {
     setSending(false);
   };
 
-  const canSubmit = form.first_name && form.last_name && form.email && form.phone
-    && form.reason_for_visit && form.thoughts_of_suicide && form.thoughts_of_harming_others;
+  const canProceedStep1 = form.reasons_for_visit.length > 0 && form.first_name && form.last_name;
+  const canSubmit = form.first_name && form.last_name && form.email && form.phone;
 
   if (submitted) {
     return (
@@ -50,9 +98,9 @@ export default function RequestServices() {
           </div>
           <h1 className="font-display text-3xl text-foreground mb-4">Request Submitted</h1>
           <p className="font-body text-muted-foreground mb-8">
-            Thank you for your request. Our team will review it and get back to you within 24 hours.
+            Thank you. Our team will review your request and contact you within 24 hours.
           </p>
-          <Button onClick={() => { setSubmitted(false); setForm({ first_name: '', last_name: '', date_of_birth: '', email: '', phone: '', street_address: '', city: '', state: '', zip_code: '', insurance_provider: '', member_id: '', primary_care_physician: '', emergency_contact_name: '', emergency_contact_phone: '', reason_for_visit: '', current_medications: '', medical_history: '', psychiatric_history: '', substance_use_history: '', thoughts_of_suicide: '', thoughts_of_harming_others: '', additional_notes: '', terms_accepted: true }); }}
+          <Button onClick={() => { setSubmitted(false); setStep(1); setForm(initialForm); }}
             variant="outline" className="rounded-full px-8 min-h-[48px] font-body">
             Submit Another Request
           </Button>
@@ -62,181 +110,243 @@ export default function RequestServices() {
   }
 
   return (
-    <section className="py-24 lg:py-32 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      <div className="max-w-3xl mx-auto px-6 lg:px-12 relative">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <p className="text-accent font-body font-semibold text-sm tracking-widest uppercase mb-4">Get Started</p>
-          <h1 className="font-display text-4xl lg:text-5xl text-foreground mb-4">Request Our Services</h1>
-          <p className="font-body text-muted-foreground max-w-xl mx-auto">
-            Take the first step toward healing. Fill out the comprehensive intake form below and our team will contact you within 24 hours.
-          </p>
-        </motion.div>
+    <section className="py-24 lg:py-32">
+      <div className="max-w-3xl mx-auto px-4 lg:px-6">
+        <h1 className="font-display text-3xl text-center text-primary mb-8">Secure Intake Form</h1>
 
-        {!termsAccepted && (
+        {!termsAccepted ? (
           <IntakeTermsGate onAccept={() => setTermsAccepted(true)} />
-        )}
-
-        {termsAccepted && (
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="bg-card rounded-2xl border border-border p-8 lg:p-12">
-            <form onSubmit={handleSubmit} className="space-y-10">
-
-              {/* Personal Information */}
-              <div>
-                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Personal Information</h2>
-                <div className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="font-body text-sm">First Name *</Label>
-                      <Input name="first_name" value={form.first_name} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-                    </div>
-                    <div>
-                      <Label className="font-body text-sm">Last Name *</Label>
-                      <Input name="last_name" value={form.last_name} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="font-body text-sm">Date of Birth *</Label>
-                      <Input name="date_of_birth" type="date" value={form.date_of_birth} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-                    </div>
-                    <div>
-                      <Label className="font-body text-sm">Email *</Label>
-                      <Input name="email" type="email" value={form.email} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-                    </div>
-                  </div>
-                  <div className="sm:w-1/2">
-                    <Label className="font-body text-sm">Phone *</Label>
-                    <Input name="phone" value={form.phone} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-                  </div>
+        ) : (
+          <>
+            {/* Step Header Bar */}
+            <div className="rounded-lg overflow-hidden mb-1">
+              <div className="bg-primary flex items-center px-6 py-3 gap-8">
+                <div className={`flex items-center gap-2 text-sm font-body font-semibold ${step === 1 ? 'text-primary-foreground' : 'text-primary-foreground/60'}`}>
+                  <span className="w-6 h-6 rounded-full border-2 border-primary-foreground/60 flex items-center justify-center text-xs font-bold">1</span>
+                  <User className="w-4 h-4" /> Patient Details
+                </div>
+                <div className={`flex items-center gap-2 text-sm font-body font-semibold ${step === 2 ? 'text-primary-foreground' : 'text-primary-foreground/60'}`}>
+                  <span className="w-6 h-6 rounded-full border-2 border-primary-foreground/60 flex items-center justify-center">
+                    {step === 2 ? <Check className="w-3 h-3" /> : '✓'}
+                  </span>
+                  Complete
                 </div>
               </div>
-
-              {/* Address Information */}
-              <div>
-                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Address Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <Label className="font-body text-sm">Street Address</Label>
-                    <Input name="street_address" value={form.street_address} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="font-body text-sm">City</Label>
-                      <Input name="city" value={form.city} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                    </div>
-                    <div>
-                      <Label className="font-body text-sm">State</Label>
-                      <Input name="state" value={form.state} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                    </div>
-                  </div>
-                  <div className="sm:w-1/2">
-                    <Label className="font-body text-sm">Zip Code</Label>
-                    <Input name="zip_code" value={form.zip_code} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                  </div>
-                </div>
+              <div className="bg-muted/80 text-center py-2 text-sm font-body text-muted-foreground border border-border border-t-0">
+                If this is an emergency, please call 911.
               </div>
+            </div>
 
-              {/* Insurance Information */}
-              <div>
-                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Insurance Information</h2>
-                <div className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="font-body text-sm">Insurance Provider</Label>
-                      <Input name="insurance_provider" value={form.insurance_provider} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+            <AnimatePresence mode="wait">
+              {/* Step 1 */}
+              {step === 1 && (
+                <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                  className="bg-card border border-border rounded-b-xl p-6 lg:p-10">
+
+                  {/* Patient Toggle */}
+                  <div className="flex gap-3 mb-8">
+                    <button
+                      onClick={() => set('is_patient', true)}
+                      className={`px-5 py-2.5 rounded-md text-sm font-body font-semibold border transition-all ${form.is_patient ? 'bg-primary text-primary-foreground border-primary' : 'bg-card text-foreground border-border hover:border-primary/50'}`}
+                    >
+                      I am the Patient
+                    </button>
+                    <button
+                      onClick={() => set('is_patient', false)}
+                      className={`px-5 py-2.5 rounded-md text-sm font-body font-semibold border transition-all ${!form.is_patient ? 'bg-primary text-primary-foreground border-primary' : 'bg-card text-foreground border-border hover:border-primary/50'}`}
+                    >
+                      I am NOT the Patient
+                    </button>
+                  </div>
+
+                  {/* Reason for Visit */}
+                  <FieldRow label="Reason for Visit" required>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2.5">
+                      {REASONS.map(reason => (
+                        <label key={reason} className="flex items-start gap-2 cursor-pointer group">
+                          <Checkbox
+                            checked={form.reasons_for_visit.includes(reason)}
+                            onCheckedChange={() => toggleReason(reason)}
+                            className="mt-0.5 shrink-0"
+                          />
+                          <span className="font-body text-sm text-foreground group-hover:text-accent transition-colors">{reason}</span>
+                        </label>
+                      ))}
                     </div>
-                    <div>
-                      <Label className="font-body text-sm">Member ID</Label>
-                      <Input name="member_id" value={form.member_id} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                    <p className="font-body text-xs text-muted-foreground italic mt-3">Reasons for Visit may change based on the provider selected.</p>
+                  </FieldRow>
+
+                  {/* Patient Name */}
+                  <FieldRow label="Patient Name" required>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Input placeholder="First" value={form.first_name} onChange={e => set('first_name', e.target.value)} required className="min-h-[44px]" />
+                      <Input placeholder="Last" value={form.last_name} onChange={e => set('last_name', e.target.value)} required className="min-h-[44px]" />
                     </div>
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Primary Care Physician</Label>
-                    <Input name="primary_care_physician" value={form.primary_care_physician} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                  </div>
-                </div>
-              </div>
+                  </FieldRow>
 
-              {/* Emergency Contact */}
-              <div>
-                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Emergency Contact</h2>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="font-body text-sm">Contact Name</Label>
-                    <Input name="emergency_contact_name" value={form.emergency_contact_name} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Contact Phone</Label>
-                    <Input name="emergency_contact_phone" value={form.emergency_contact_phone} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-                  </div>
-                </div>
-              </div>
+                  {/* Birthday */}
+                  <FieldRow label="Birthday" required>
+                    <Input type="date" value={form.date_of_birth} onChange={e => set('date_of_birth', e.target.value)} className="min-h-[44px] max-w-xs" />
+                  </FieldRow>
 
-              {/* Clinical Information */}
-              <div>
-                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Clinical Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <Label className="font-body text-sm">Reason for Visit *</Label>
-                    <Textarea name="reason_for_visit" value={form.reason_for_visit} onChange={handleChange} required rows={3}
-                      placeholder="Please describe the primary reason you are seeking services..." className="mt-1.5" />
+                  {/* Birth Sex */}
+                  <FieldRow label="Birth Sex" required>
+                    <Select value={form.birth_sex} onValueChange={v => set('birth_sex', v)}>
+                      <SelectTrigger className="min-h-[44px] max-w-xs"><SelectValue placeholder="Birth Sex" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FieldRow>
+
+                  {/* Address */}
+                  <FieldRow label="Address" required>
+                    <div className="space-y-2">
+                      <Input placeholder="123 Main St." value={form.street_address} onChange={e => set('street_address', e.target.value)} className="min-h-[44px]" />
+                      <Input placeholder="Apt #" value={form.apt} onChange={e => set('apt', e.target.value)} className="min-h-[44px]" />
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input placeholder="ZIP" value={form.zip_code} onChange={e => set('zip_code', e.target.value)} className="min-h-[44px]" />
+                        <Input placeholder="CITY" value={form.city} onChange={e => set('city', e.target.value)} className="min-h-[44px]" />
+                        <Select value={form.state} onValueChange={v => set('state', v)}>
+                          <SelectTrigger className="min-h-[44px]"><SelectValue placeholder="St" /></SelectTrigger>
+                          <SelectContent>
+                            {STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </FieldRow>
+
+                  {/* Phone */}
+                  <FieldRow label="Phone" required>
+                    <Input placeholder="000-000-0000" value={form.phone} onChange={e => set('phone', e.target.value)} required className="min-h-[44px] max-w-xs" />
+                  </FieldRow>
+
+                  {/* Email */}
+                  <FieldRow label="Email" required>
+                    <Input type="email" placeholder="test@gmail.com" value={form.email} onChange={e => set('email', e.target.value)} required className="min-h-[44px] max-w-sm" />
+                  </FieldRow>
+
+                  {/* Preferred Language */}
+                  <FieldRow label="Preferred Language">
+                    <Select value={form.preferred_language} onValueChange={v => set('preferred_language', v)}>
+                      <SelectTrigger className="min-h-[44px] max-w-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {LANGUAGES.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </FieldRow>
+
+                  {/* Referring Provider */}
+                  <FieldRow label="Referring Provider/Entity">
+                    <Input value={form.referring_provider} onChange={e => set('referring_provider', e.target.value)} className="min-h-[44px]" />
+                  </FieldRow>
+
+                  {/* Primary Care Provider */}
+                  <FieldRow label="Primary Care Provider Name">
+                    <Input value={form.primary_care_physician} onChange={e => set('primary_care_physician', e.target.value)} className="min-h-[44px]" />
+                  </FieldRow>
+
+                  {/* Primary Insurance */}
+                  <FieldRow label="Primary Insurance" required>
+                    <Select value={form.insurance_provider} onValueChange={v => set('insurance_provider', v)}>
+                      <SelectTrigger className="min-h-[44px] max-w-sm"><SelectValue placeholder="Primary Insurance" /></SelectTrigger>
+                      <SelectContent>
+                        {INSURANCE.map(ins => <SelectItem key={ins} value={ins}>{ins}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </FieldRow>
+
+                  {/* Insurance ID */}
+                  <FieldRow label="Insurance ID">
+                    <Input placeholder="Insurance ID" value={form.member_id} onChange={e => set('member_id', e.target.value)} className="min-h-[44px]" />
+                  </FieldRow>
+
+                  {/* Additional Insurance */}
+                  <FieldRow label="Additional Insurance (Secondary)">
+                    <Input value={form.additional_insurance} onChange={e => set('additional_insurance', e.target.value)} className="min-h-[44px]" />
+                  </FieldRow>
+
+                  {/* How did you hear */}
+                  <FieldRow label="How did you hear about us?">
+                    <Input value={form.how_did_you_hear} onChange={e => set('how_did_you_hear', e.target.value)} className="min-h-[44px]" />
+                  </FieldRow>
+
+                  {/* Additional Details */}
+                  <FieldRow label="Additional Details About Reason for Visit">
+                    <Textarea placeholder="Type your comments here" value={form.additional_details} onChange={e => set('additional_details', e.target.value)} rows={5} />
+                  </FieldRow>
+
+                  {/* Buttons */}
+                  <div className="flex justify-between mt-8 pt-4">
+                    <div />
+                    <Button onClick={() => setStep(2)} disabled={!canProceedStep1}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-body font-semibold rounded-full px-8 min-h-[48px]">
+                      Next <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
                   </div>
-                  <div>
-                    <Label className="font-body text-sm">Current Medications</Label>
-                    <Textarea name="current_medications" value={form.current_medications} onChange={handleChange} rows={3}
-                      placeholder="List any current medications and dosages..." className="mt-1.5" />
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Medical History</Label>
-                    <Textarea name="medical_history" value={form.medical_history} onChange={handleChange} rows={3}
-                      placeholder="Any significant medical conditions or surgeries..." className="mt-1.5" />
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Psychiatric History</Label>
-                    <Textarea name="psychiatric_history" value={form.psychiatric_history} onChange={handleChange} rows={3}
-                      placeholder="Previous mental health diagnoses or treatments..." className="mt-1.5" />
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Substance Use History</Label>
-                    <Textarea name="substance_use_history" value={form.substance_use_history} onChange={handleChange} rows={3}
-                      placeholder="Any history of substance use or addiction..." className="mt-1.5" />
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Are you currently having thoughts of suicide? *</Label>
-                    <Select value={form.thoughts_of_suicide} onValueChange={(v) => handleSelect('thoughts_of_suicide', v)}>
-                      <SelectTrigger className="mt-1.5 min-h-[48px]"><SelectValue placeholder="Select..." /></SelectTrigger>
+                </motion.div>
+              )}
+
+              {/* Step 2 - Review & Submit */}
+              {step === 2 && (
+                <motion.form key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                  onSubmit={handleSubmit}
+                  className="bg-card border border-border rounded-b-xl p-6 lg:p-10">
+
+                  <h2 className="font-display text-xl text-foreground mb-6">Review & Confirm</h2>
+
+                  {/* Safety Questions */}
+                  <FieldRow label="Thoughts of suicide?" required>
+                    <Select value={form.thoughts_of_suicide} onValueChange={v => set('thoughts_of_suicide', v)}>
+                      <SelectTrigger className="min-h-[44px] max-w-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="No">No</SelectItem>
                         <SelectItem value="Yes">Yes</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Are you currently having thoughts of harming others? *</Label>
-                    <Select value={form.thoughts_of_harming_others} onValueChange={(v) => handleSelect('thoughts_of_harming_others', v)}>
-                      <SelectTrigger className="mt-1.5 min-h-[48px]"><SelectValue placeholder="Select..." /></SelectTrigger>
+                  </FieldRow>
+
+                  <FieldRow label="Thoughts of harming others?" required>
+                    <Select value={form.thoughts_of_harming_others} onValueChange={v => set('thoughts_of_harming_others', v)}>
+                      <SelectTrigger className="min-h-[44px] max-w-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="No">No</SelectItem>
                         <SelectItem value="Yes">Yes</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div>
-                    <Label className="font-body text-sm">Additional Notes</Label>
-                    <Textarea name="additional_notes" value={form.additional_notes} onChange={handleChange} rows={3}
-                      placeholder="Any other information you'd like us to know..." className="mt-1.5" />
-                  </div>
-                </div>
-              </div>
+                  </FieldRow>
 
-              <Button type="submit" disabled={!canSubmit || sending}
-                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full min-h-[52px] text-base">
-                {sending ? 'Submitting...' : <><Send className="mr-2 w-4 h-4" /> Submit Request</>}
-              </Button>
-            </form>
-          </motion.div>
+                  {/* Summary */}
+                  <div className="bg-muted/50 rounded-xl p-5 border border-border mt-4 mb-6 space-y-2">
+                    <h3 className="font-display text-base text-foreground mb-3">Summary</h3>
+                    <div className="grid sm:grid-cols-2 gap-2 text-sm font-body">
+                      <div><span className="text-muted-foreground">Name: </span><span className="font-semibold">{form.first_name} {form.last_name}</span></div>
+                      <div><span className="text-muted-foreground">Phone: </span><span className="font-semibold">{form.phone}</span></div>
+                      <div><span className="text-muted-foreground">Email: </span><span className="font-semibold">{form.email}</span></div>
+                      <div><span className="text-muted-foreground">Insurance: </span><span className="font-semibold">{form.insurance_provider || '—'}</span></div>
+                      {form.reasons_for_visit.length > 0 && (
+                        <div className="sm:col-span-2"><span className="text-muted-foreground">Reasons: </span><span className="font-semibold">{form.reasons_for_visit.join(', ')}</span></div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <Button type="button" onClick={() => setStep(1)} variant="outline" className="rounded-full px-8 min-h-[48px] font-body">
+                      <ArrowLeft className="mr-2 w-4 h-4" /> Back
+                    </Button>
+                    <Button type="submit" disabled={!canSubmit || sending}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-body font-semibold rounded-full px-8 min-h-[48px]">
+                      {sending ? 'Submitting...' : 'Submit Form'}
+                    </Button>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </>
         )}
       </div>
     </section>
