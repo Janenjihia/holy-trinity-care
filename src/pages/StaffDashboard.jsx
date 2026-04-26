@@ -65,9 +65,11 @@ export default function StaffDashboard() {
       <div className="border-b border-primary-foreground/10 px-6 lg:px-12 py-4">
         <div className="max-w-[120rem] mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-              <span className="text-accent-foreground font-display text-sm">H</span>
-            </div>
+            <img
+              src="https://media.base44.com/images/public/69ed9e88109de49093b449ea/f031319c4_Screenshot2026-04-25at25418PM.png"
+              alt="Holy Trinity Care Logo"
+              className="w-8 h-8 object-contain brightness-0 invert"
+            />
             <span className="font-display text-lg text-primary-foreground">Staff Dashboard</span>
           </div>
           <Button variant="ghost" onClick={() => base44.auth.logout('/')} className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10 font-body text-sm min-h-[48px]">

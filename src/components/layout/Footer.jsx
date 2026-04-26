@@ -29,9 +29,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-                <span className="text-accent-foreground font-display text-lg">H</span>
-              </div>
+              <img
+                src="https://media.base44.com/images/public/69ed9e88109de49093b449ea/f031319c4_Screenshot2026-04-25at25418PM.png"
+                alt="Holy Trinity Care Logo"
+                className="w-10 h-10 object-contain shrink-0 brightness-0 invert"
+              />
               <span className="font-display text-xl">Holy Trinity Care</span>
             </div>
             <p className="text-primary-foreground/70 text-sm font-body leading-relaxed mb-6 readable-width">

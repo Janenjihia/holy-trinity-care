@@ -41,9 +41,11 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0">
-              <span className="text-primary-foreground font-display text-lg">H</span>
-            </div>
+            <img
+              src="https://media.base44.com/images/public/69ed9e88109de49093b449ea/f031319c4_Screenshot2026-04-25at25418PM.png"
+              alt="Holy Trinity Care Logo"
+              className="w-10 h-10 object-contain shrink-0"
+            />
             <div className="flex flex-col">
               <span className="font-display text-xl text-primary leading-tight">Holy Trinity Care</span>
               <span className="text-xs text-muted-foreground font-body hidden sm:block">Behavioral Health Clinic</span>
