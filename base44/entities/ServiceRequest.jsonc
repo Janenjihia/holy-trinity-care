@@ -1,0 +1,72 @@
+{
+  "name": "ServiceRequest",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "address": {
+      "type": "string",
+      "description": "Home address"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "behavioral_health",
+        "addiction_substance"
+      ],
+      "description": "Type of service"
+    },
+    "specific_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific services requested"
+    },
+    "preferred_schedule": {
+      "type": "string",
+      "description": "Preferred schedule"
+    },
+    "insurance_provider": {
+      "type": "string",
+      "description": "Insurance provider"
+    },
+    "additional_info": {
+      "type": "string",
+      "description": "Additional information"
+    },
+    "terms_accepted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Terms and conditions accepted"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "in_review",
+        "approved",
+        "active",
+        "completed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "full_name",
+    "email",
+    "phone",
+    "service_type",
+    "terms_accepted"
+  ]
+}

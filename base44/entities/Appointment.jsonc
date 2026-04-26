@@ -1,0 +1,65 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Full name of the client"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Appointment date"
+    },
+    "time_slot": {
+      "type": "string",
+      "description": "Selected time slot"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "behavioral_health",
+        "addiction_substance"
+      ],
+      "description": "Type of service"
+    },
+    "specific_service": {
+      "type": "string",
+      "description": "Specific service requested"
+    },
+    "insurance_provider": {
+      "type": "string",
+      "description": "Insurance provider name"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "full_name",
+    "email",
+    "phone",
+    "date",
+    "time_slot",
+    "service_type"
+  ]
+}
