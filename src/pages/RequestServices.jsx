@@ -5,51 +5,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
-import { Send, FileText, CheckCircle } from 'lucide-react';
-
-const bhServices = ['Outpatient Services', 'In-Home Therapy', 'Family Support', 'Child & Adolescent Services'];
-const addictionServices = ['Medication-Assisted Treatment', 'Counseling Services', 'Recovery Support', 'Evidence-Based Care'];
+import { Send, CheckCircle } from 'lucide-react';
 
 export default function RequestServices() {
-  const [form, setForm] = useState({
-    full_name: '', email: '', phone: '', address: '',
-    service_type: '', specific_services: [],
-    preferred_schedule: '', insurance_provider: '', additional_info: '', terms_accepted: false,
-  });
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  const toggleService = (service) => {
-    setForm(prev => ({
-      ...prev,
-      specific_services: prev.specific_services.includes(service)
-        ? prev.specific_services.filter(s => s !== service)
-        : [...prev.specific_services, service],
-    }));
-  };
+  const [form, setForm] = useState({
+    first_name: '', last_name: '', date_of_birth: '', email: '', phone: '',
+    street_address: '', city: '', state: '', zip_code: '',
+    insurance_provider: '', member_id: '', primary_care_physician: '',
+    emergency_contact_name: '', emergency_contact_phone: '',
+    reason_for_visit: '', current_medications: '', medical_history: '',
+    psychiatric_history: '', substance_use_history: '',
+    thoughts_of_suicide: '', thoughts_of_harming_others: '',
+    additional_notes: '', terms_accepted: true,
+  });
 
-  const availableServices = form.service_type === 'behavioral_health' ? bhServices
-    : form.service_type === 'addiction_substance' ? addictionServices : [];
+  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleSelect = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.terms_accepted) {
-      toast.error('Please accept the terms and conditions.');
-      return;
-    }
     setSending(true);
     await base44.entities.ServiceRequest.create(form);
-    toast.success('Service request submitted successfully!');
+    toast.success('Your request has been submitted successfully!');
     setSubmitted(true);
     setSending(false);
   };
+
+  const canSubmit = form.first_name && form.last_name && form.email && form.phone
+    && form.reason_for_visit && form.thoughts_of_suicide && form.thoughts_of_harming_others;
 
   if (submitted) {
     return (
@@ -60,9 +50,9 @@ export default function RequestServices() {
           </div>
           <h1 className="font-display text-3xl text-foreground mb-4">Request Submitted</h1>
           <p className="font-body text-muted-foreground mb-8">
-            Thank you for your request. Our team will review it and get back to you within 1-2 business days.
+            Thank you for your request. Our team will review it and get back to you within 24 hours.
           </p>
-          <Button onClick={() => { setSubmitted(false); setForm({ full_name: '', email: '', phone: '', address: '', service_type: '', specific_services: [], preferred_schedule: '', insurance_provider: '', additional_info: '', terms_accepted: false }); }}
+          <Button onClick={() => { setSubmitted(false); setForm({ first_name: '', last_name: '', date_of_birth: '', email: '', phone: '', street_address: '', city: '', state: '', zip_code: '', insurance_provider: '', member_id: '', primary_care_physician: '', emergency_contact_name: '', emergency_contact_phone: '', reason_for_visit: '', current_medications: '', medical_history: '', psychiatric_history: '', substance_use_history: '', thoughts_of_suicide: '', thoughts_of_harming_others: '', additional_notes: '', terms_accepted: true }); }}
             variant="outline" className="rounded-full px-8 min-h-[48px] font-body">
             Submit Another Request
           </Button>
@@ -77,9 +67,9 @@ export default function RequestServices() {
       <div className="max-w-3xl mx-auto px-6 lg:px-12 relative">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <p className="text-accent font-body font-semibold text-sm tracking-widest uppercase mb-4">Get Started</p>
-          <h1 className="font-display text-4xl lg:text-5xl text-foreground mb-4">Request Services</h1>
+          <h1 className="font-display text-4xl lg:text-5xl text-foreground mb-4">Request Our Services</h1>
           <p className="font-body text-muted-foreground max-w-xl mx-auto">
-            Tell us about your needs and we'll match you with the right care program.
+            Take the first step toward healing. Fill out the comprehensive intake form below and our team will contact you within 24 hours.
           </p>
         </motion.div>
 
@@ -88,86 +78,165 @@ export default function RequestServices() {
         )}
 
         {termsAccepted && (
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="bg-card rounded-2xl border border-border p-8 lg:p-12">
+            <form onSubmit={handleSubmit} className="space-y-10">
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-card rounded-2xl border border-border p-8 lg:p-12"
-        >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid sm:grid-cols-2 gap-4">
+              {/* Personal Information */}
               <div>
-                <Label className="font-body text-sm">Full Name *</Label>
-                <Input name="full_name" value={form.full_name} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-              </div>
-              <div>
-                <Label className="font-body text-sm">Email *</Label>
-                <Input name="email" type="email" value={form.email} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <Label className="font-body text-sm">Phone *</Label>
-                <Input name="phone" value={form.phone} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
-              </div>
-              <div>
-                <Label className="font-body text-sm">Address</Label>
-                <Input name="address" value={form.address} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
-              </div>
-            </div>
-
-            <div>
-              <Label className="font-body text-sm">Service Type *</Label>
-              <Select value={form.service_type} onValueChange={(v) => setForm(prev => ({ ...prev, service_type: v, specific_services: [] }))}>
-                <SelectTrigger className="mt-1.5 min-h-[48px]">
-                  <SelectValue placeholder="Select a service category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="behavioral_health">Behavioral Health</SelectItem>
-                  <SelectItem value="addiction_substance">Addiction & Substance Program</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {availableServices.length > 0 && (
-              <div>
-                <Label className="font-body text-sm mb-3 block">Specific Services</Label>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {availableServices.map(service => (
-                    <label key={service} className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 cursor-pointer transition-colors min-h-[48px]">
-                      <Checkbox
-                        checked={form.specific_services.includes(service)}
-                        onCheckedChange={() => toggleService(service)}
-                      />
-                      <span className="font-body text-sm">{service}</span>
-                    </label>
-                  ))}
+                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Personal Information</h2>
+                <div className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-body text-sm">First Name *</Label>
+                      <Input name="first_name" value={form.first_name} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
+                    </div>
+                    <div>
+                      <Label className="font-body text-sm">Last Name *</Label>
+                      <Input name="last_name" value={form.last_name} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-body text-sm">Date of Birth *</Label>
+                      <Input name="date_of_birth" type="date" value={form.date_of_birth} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
+                    </div>
+                    <div>
+                      <Label className="font-body text-sm">Email *</Label>
+                      <Input name="email" type="email" value={form.email} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
+                    </div>
+                  </div>
+                  <div className="sm:w-1/2">
+                    <Label className="font-body text-sm">Phone *</Label>
+                    <Input name="phone" value={form.phone} onChange={handleChange} required className="mt-1.5 min-h-[48px]" />
+                  </div>
                 </div>
               </div>
-            )}
 
-            <div className="grid sm:grid-cols-2 gap-4">
+              {/* Address Information */}
               <div>
-                <Label className="font-body text-sm">Preferred Schedule</Label>
-                <Input name="preferred_schedule" value={form.preferred_schedule} onChange={handleChange} placeholder="e.g. Mornings, Weekdays" className="mt-1.5 min-h-[48px]" />
+                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Address Information</h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="font-body text-sm">Street Address</Label>
+                    <Input name="street_address" value={form.street_address} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-body text-sm">City</Label>
+                      <Input name="city" value={form.city} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                    </div>
+                    <div>
+                      <Label className="font-body text-sm">State</Label>
+                      <Input name="state" value={form.state} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                    </div>
+                  </div>
+                  <div className="sm:w-1/2">
+                    <Label className="font-body text-sm">Zip Code</Label>
+                    <Input name="zip_code" value={form.zip_code} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                  </div>
+                </div>
               </div>
+
+              {/* Insurance Information */}
               <div>
-                <Label className="font-body text-sm">Insurance Provider</Label>
-                <Input name="insurance_provider" value={form.insurance_provider} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Insurance Information</h2>
+                <div className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-body text-sm">Insurance Provider</Label>
+                      <Input name="insurance_provider" value={form.insurance_provider} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                    </div>
+                    <div>
+                      <Label className="font-body text-sm">Member ID</Label>
+                      <Input name="member_id" value={form.member_id} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Primary Care Physician</Label>
+                    <Input name="primary_care_physician" value={form.primary_care_physician} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <Label className="font-body text-sm">Additional Information</Label>
-              <Textarea name="additional_info" value={form.additional_info} onChange={handleChange} rows={4} className="mt-1.5" />
-            </div>
+              {/* Emergency Contact */}
+              <div>
+                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Emergency Contact</h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-body text-sm">Contact Name</Label>
+                    <Input name="emergency_contact_name" value={form.emergency_contact_name} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Contact Phone</Label>
+                    <Input name="emergency_contact_phone" value={form.emergency_contact_phone} onChange={handleChange} className="mt-1.5 min-h-[48px]" />
+                  </div>
+                </div>
+              </div>
 
-            <Button type="submit" disabled={sending} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full min-h-[52px] text-base">
-              {sending ? 'Submitting...' : <>Submit Request <Send className="ml-2 w-4 h-4" /></>}
-            </Button>
-          </form>
-        </motion.div>
+              {/* Clinical Information */}
+              <div>
+                <h2 className="font-display text-xl text-foreground mb-6 pb-2 border-b border-border">Clinical Information</h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="font-body text-sm">Reason for Visit *</Label>
+                    <Textarea name="reason_for_visit" value={form.reason_for_visit} onChange={handleChange} required rows={3}
+                      placeholder="Please describe the primary reason you are seeking services..." className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Current Medications</Label>
+                    <Textarea name="current_medications" value={form.current_medications} onChange={handleChange} rows={3}
+                      placeholder="List any current medications and dosages..." className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Medical History</Label>
+                    <Textarea name="medical_history" value={form.medical_history} onChange={handleChange} rows={3}
+                      placeholder="Any significant medical conditions or surgeries..." className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Psychiatric History</Label>
+                    <Textarea name="psychiatric_history" value={form.psychiatric_history} onChange={handleChange} rows={3}
+                      placeholder="Previous mental health diagnoses or treatments..." className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Substance Use History</Label>
+                    <Textarea name="substance_use_history" value={form.substance_use_history} onChange={handleChange} rows={3}
+                      placeholder="Any history of substance use or addiction..." className="mt-1.5" />
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Are you currently having thoughts of suicide? *</Label>
+                    <Select value={form.thoughts_of_suicide} onValueChange={(v) => handleSelect('thoughts_of_suicide', v)}>
+                      <SelectTrigger className="mt-1.5 min-h-[48px]"><SelectValue placeholder="Select..." /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="No">No</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Are you currently having thoughts of harming others? *</Label>
+                    <Select value={form.thoughts_of_harming_others} onValueChange={(v) => handleSelect('thoughts_of_harming_others', v)}>
+                      <SelectTrigger className="mt-1.5 min-h-[48px]"><SelectValue placeholder="Select..." /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="No">No</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="font-body text-sm">Additional Notes</Label>
+                    <Textarea name="additional_notes" value={form.additional_notes} onChange={handleChange} rows={3}
+                      placeholder="Any other information you'd like us to know..." className="mt-1.5" />
+                  </div>
+                </div>
+              </div>
+
+              <Button type="submit" disabled={!canSubmit || sending}
+                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full min-h-[52px] text-base">
+                {sending ? 'Submitting...' : <><Send className="mr-2 w-4 h-4" /> Submit Request</>}
+              </Button>
+            </form>
+          </motion.div>
         )}
       </div>
     </section>

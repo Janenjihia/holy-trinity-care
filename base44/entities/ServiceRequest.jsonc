@@ -2,9 +2,18 @@
   "name": "ServiceRequest",
   "type": "object",
   "properties": {
-    "full_name": {
+    "first_name": {
       "type": "string",
-      "description": "Full name"
+      "description": "First name"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Last name"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth"
     },
     "email": {
       "type": "string",
@@ -14,36 +23,81 @@
       "type": "string",
       "description": "Phone number"
     },
-    "address": {
+    "street_address": {
       "type": "string",
-      "description": "Home address"
+      "description": "Street address"
     },
-    "service_type": {
+    "city": {
       "type": "string",
-      "enum": [
-        "behavioral_health",
-        "addiction_substance"
-      ],
-      "description": "Type of service"
+      "description": "City"
     },
-    "specific_services": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Specific services requested"
-    },
-    "preferred_schedule": {
+    "state": {
       "type": "string",
-      "description": "Preferred schedule"
+      "description": "State"
+    },
+    "zip_code": {
+      "type": "string",
+      "description": "Zip code"
     },
     "insurance_provider": {
       "type": "string",
       "description": "Insurance provider"
     },
-    "additional_info": {
+    "member_id": {
       "type": "string",
-      "description": "Additional information"
+      "description": "Insurance member ID"
+    },
+    "primary_care_physician": {
+      "type": "string",
+      "description": "Primary care physician"
+    },
+    "emergency_contact_name": {
+      "type": "string",
+      "description": "Emergency contact name"
+    },
+    "emergency_contact_phone": {
+      "type": "string",
+      "description": "Emergency contact phone"
+    },
+    "reason_for_visit": {
+      "type": "string",
+      "description": "Reason for visit"
+    },
+    "current_medications": {
+      "type": "string",
+      "description": "Current medications and dosages"
+    },
+    "medical_history": {
+      "type": "string",
+      "description": "Medical history"
+    },
+    "psychiatric_history": {
+      "type": "string",
+      "description": "Psychiatric history"
+    },
+    "substance_use_history": {
+      "type": "string",
+      "description": "Substance use history"
+    },
+    "thoughts_of_suicide": {
+      "type": "string",
+      "enum": [
+        "No",
+        "Yes"
+      ],
+      "description": "Currently having thoughts of suicide"
+    },
+    "thoughts_of_harming_others": {
+      "type": "string",
+      "enum": [
+        "No",
+        "Yes"
+      ],
+      "description": "Currently having thoughts of harming others"
+    },
+    "additional_notes": {
+      "type": "string",
+      "description": "Additional notes"
     },
     "terms_accepted": {
       "type": "boolean",
@@ -63,10 +117,13 @@
     }
   },
   "required": [
-    "full_name",
+    "first_name",
+    "last_name",
     "email",
     "phone",
-    "service_type",
+    "reason_for_visit",
+    "thoughts_of_suicide",
+    "thoughts_of_harming_others",
     "terms_accepted"
   ]
 }

@@ -12,7 +12,7 @@ import About from './pages/About';
 import Services from './pages/Services';
 import ServiceDetail from './pages/ServiceDetail';
 import Contact from './pages/Contact';
-import RequestServices from './pages/RequestServices';
+import RequestServices from './pages/RequestServices.jsx';
 import BookAppointment from './pages/BookAppointment';
 import StaffLogin from './pages/StaffLogin';
 import StaffDashboard from './pages/StaffDashboard';
