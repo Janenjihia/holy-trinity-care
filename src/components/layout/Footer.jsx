@@ -14,9 +14,11 @@ const serviceLinks = [
 const quickLinks = [
   { label: 'About Us', path: '/about' },
   { label: 'Our Services', path: '/services' },
-  { label: 'Request Services', path: '/request-services' },
+  { label: 'Testimonials', path: '/testimonials' },
+  { label: 'Request Service', path: '/request-services' },
   { label: 'Book Appointment', path: '/book-appointment' },
   { label: 'Contact Us', path: '/contact' },
+  { label: 'Our Location', path: '/location' },
 ];
 
 export default function Footer() {

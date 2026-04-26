@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,7 +14,9 @@ const navLinks = [
       { label: 'Addiction & Substance Program', path: '/services/addiction-substance' },
     ]
   },
+  { label: 'Testimonials', path: '/testimonials' },
   { label: 'Contact', path: '/contact' },
+  { label: 'Location', path: '/location' },
 ];
 
 export default function Navbar() {
@@ -40,12 +42,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0">
               <span className="text-primary-foreground font-display text-lg">H</span>
             </div>
             <div className="flex flex-col">
               <span className="font-display text-xl text-primary leading-tight">Holy Trinity Care</span>
-              <span className="text-xs text-muted-foreground italic font-body hidden sm:block">A Place to Heal, A Promise to Care</span>
+              <span className="text-xs text-muted-foreground font-body hidden sm:block">Behavioral Health Clinic</span>
             </div>
           </Link>
 
@@ -103,14 +105,16 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <a href="tel:7819898159" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[48px]">
-              <Phone className="w-4 h-4" />
-              (781) 989-8159
-            </a>
-            <Link to="/book-appointment">
+            <Link to="/request-services">
               <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full px-6 min-h-[48px]">
-                Book Appointment
+                Request Service
               </Button>
+            </Link>
+            <Link
+              to="/staff-login"
+              className="text-sm font-body font-medium text-foreground hover:text-accent transition-colors min-h-[48px] flex items-center px-2"
+            >
+              Staff Login
             </Link>
           </div>
 
@@ -154,14 +158,13 @@ export default function Navbar() {
                   </React.Fragment>
                 ))}
                 <div className="px-4 pt-4 space-y-3">
-                  <a href="tel:7819898159" className="flex items-center gap-2 text-sm text-muted-foreground min-h-[48px]">
-                    <Phone className="w-4 h-4" />
-                    (781) 989-8159
-                  </a>
-                  <Link to="/book-appointment" className="block">
+                  <Link to="/request-services" className="block">
                     <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full min-h-[48px]">
-                      Book Appointment
+                      Request Service
                     </Button>
+                  </Link>
+                  <Link to="/staff-login" className="block px-2 py-3 text-sm font-body font-medium text-foreground hover:text-accent min-h-[48px] flex items-center">
+                    Staff Login
                   </Link>
                 </div>
               </div>

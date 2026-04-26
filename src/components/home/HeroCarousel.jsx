@@ -2,43 +2,61 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: 'https://media.base44.com/images/public/69ed9e88109de49093b449ea/23ec4e627_generated_aa127f95.png',
-    headline: 'Compassionate Care,\nLasting Change',
-    subtitle: 'Supporting mental wellness for individuals and families through evidence-based behavioral health services.',
+    image: '/__generating__/img_c08e3818f1ab.png',
+    headline: 'A Place to Heal, A Promise to Care',
+    subtitle: 'Compassionate behavioral health and home care services for your complete wellness journey.',
   },
   {
-    image: 'https://media.base44.com/images/public/69ed9e88109de49093b449ea/714630235_generated_b55a6775.png',
-    headline: 'A Place to Heal,\nA Promise to Care',
-    subtitle: 'Comprehensive behavioral health and addiction services tailored to your unique journey toward recovery.',
+    image: '/__generating__/img_aebab82dffa5.png',
+    headline: 'Comprehensive Behavioral Health Services',
+    subtitle: 'Supporting mental wellness for individuals and families. Encouraging lasting change.',
   },
   {
-    image: 'https://media.base44.com/images/public/69ed9e88109de49093b449ea/a8d86f9f6_generated_f9d9d2dd.png',
-    headline: 'Your Recovery\nBegins Here',
-    subtitle: 'From outpatient therapy to medication-assisted treatment, we walk beside you every step of the way.',
+    image: '/__generating__/img_962aa94d900e.png',
+    headline: 'Your Recovery Begins Here',
+    subtitle: 'Evidence-based addiction treatment and recovery support tailored to your unique journey.',
   },
 ];
 
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setDirection(1);
       setCurrent(prev => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
   }, []);
 
+  const go = (idx) => {
+    setDirection(idx > current ? 1 : -1);
+    setCurrent(idx);
+  };
+
+  const prev = () => {
+    setDirection(-1);
+    setCurrent(prev => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const next = () => {
+    setDirection(1);
+    setCurrent(prev => (prev + 1) % slides.length);
+  };
+
   return (
-    <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
+    <section className="relative h-[90vh] min-h-[580px] overflow-hidden">
       {/* Background Images */}
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="sync" custom={direction}>
         <motion.div
           key={current}
-          initial={{ opacity: 0, scale: 1.05 }}
+          custom={direction}
+          initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
@@ -49,72 +67,63 @@ export default function HeroCarousel() {
             alt=""
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/50 to-transparent" />
+          <div className="absolute inset-0 bg-primary/55" />
         </motion.div>
       </AnimatePresence>
 
-      {/* Peripheral Glow */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-
-      {/* Content */}
-      <div className="relative z-10 h-full max-w-[120rem] mx-auto px-6 lg:px-12 flex flex-col justify-end pb-24 lg:pb-32">
+      {/* Centered Content */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-2xl"
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="max-w-3xl"
           >
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl text-white leading-[1.1] mb-6 whitespace-pre-line">
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-6xl text-white leading-[1.1] mb-5">
               {slides[current].headline}
             </h1>
-            <p className="text-white/80 text-base lg:text-lg font-body leading-relaxed mb-8 readable-width">
+            <p className="text-white/80 text-base lg:text-lg font-body leading-relaxed mb-8 max-w-xl mx-auto">
               {slides[current].subtitle}
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/book-appointment">
-                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full px-8 min-h-[52px] text-base">
-                  Schedule Appointment
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </Link>
-              <Link to="/services">
-                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 font-body rounded-full px-8 min-h-[52px] text-base">
-                  Explore Services
-                </Button>
-              </Link>
-            </div>
+            <Link to="/request-services">
+              <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full px-10 min-h-[52px] text-base shadow-lg">
+                Request Service Today
+              </Button>
+            </Link>
           </motion.div>
         </AnimatePresence>
 
         {/* Slide Indicators */}
-        <div className="flex gap-2 mt-10">
+        <div className="flex gap-3 mt-10 absolute bottom-10">
           {slides.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-1 rounded-full transition-all duration-500 min-w-[48px] min-h-[12px] flex items-center ${
-                i === current ? 'bg-accent w-12' : 'bg-white/30 w-6 hover:bg-white/50'
-              }`}
+              onClick={() => go(i)}
+              className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'bg-white w-8' : 'bg-white/40 w-2 hover:bg-white/60'}`}
               aria-label={`Go to slide ${i + 1}`}
-            >
-              <span className={`block h-1 rounded-full w-full ${i === current ? 'bg-accent' : 'bg-white/30'}`} />
-            </button>
+            />
           ))}
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+      {/* Left / Right Arrows */}
+      <button
+        onClick={prev}
+        aria-label="Previous slide"
+        className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/35 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
       >
-        <ChevronDown className="w-6 h-6 text-white/50" />
-      </motion.div>
+        <ChevronLeft className="w-6 h-6 text-white" />
+      </button>
+      <button
+        onClick={next}
+        aria-label="Next slide"
+        className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/35 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
+      >
+        <ChevronRight className="w-6 h-6 text-white" />
+      </button>
     </section>
   );
 }

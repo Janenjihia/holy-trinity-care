@@ -17,6 +17,8 @@ import RequestServices from './pages/RequestServices';
 import BookAppointment from './pages/BookAppointment';
 import StaffLogin from './pages/StaffLogin';
 import StaffDashboard from './pages/StaffDashboard';
+import Testimonials from './pages/Testimonials';
+import Location from './pages/Location';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +55,8 @@ const AuthenticatedApp = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/request-services" element={<RequestServices />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/location" element={<Location />} />
         <Route path="/staff-login" element={<StaffLogin />} />
       </Route>
       <Route path="/staff-dashboard" element={<StaffDashboard />} />
