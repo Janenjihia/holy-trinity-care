@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import IntakeTermsGate from '../components/intake/IntakeTermsGate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,6 +21,7 @@ export default function RequestServices() {
     service_type: '', specific_services: [],
     preferred_schedule: '', insurance_provider: '', additional_info: '', terms_accepted: false,
   });
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -80,6 +82,12 @@ export default function RequestServices() {
             Tell us about your needs and we'll match you with the right care program.
           </p>
         </motion.div>
+
+        {!termsAccepted && (
+          <IntakeTermsGate onAccept={() => setTermsAccepted(true)} />
+        )}
+
+        {termsAccepted && (
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -155,49 +163,12 @@ export default function RequestServices() {
               <Textarea name="additional_info" value={form.additional_info} onChange={handleChange} rows={4} className="mt-1.5" />
             </div>
 
-            {/* Terms */}
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border">
-              <Checkbox
-                id="terms"
-                checked={form.terms_accepted}
-                onCheckedChange={(checked) => setForm(prev => ({ ...prev, terms_accepted: checked }))}
-                className="mt-0.5"
-              />
-              <div>
-                <label htmlFor="terms" className="font-body text-sm text-foreground cursor-pointer">
-                  I agree to the{' '}
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button type="button" className="text-accent underline hover:no-underline">Terms and Conditions</button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle className="font-display text-2xl">Terms and Conditions</DialogTitle>
-                      </DialogHeader>
-                      <div className="font-body text-sm text-muted-foreground space-y-4 mt-4">
-                        <p><strong>1. Consent to Services:</strong> By submitting this request, you consent to be contacted by Holy Trinity Care regarding the services you have requested.</p>
-                        <p><strong>2. Confidentiality:</strong> All personal and health information provided will be kept strictly confidential in accordance with HIPAA regulations.</p>
-                        <p><strong>3. Service Availability:</strong> Submission of this form does not guarantee immediate service placement. Our team will review your request and contact you to discuss availability and next steps.</p>
-                        <p><strong>4. Insurance & Payment:</strong> We accept most major insurance providers. Eligibility and benefits will be verified prior to service initiation.</p>
-                        <p><strong>5. Cancellation Policy:</strong> We require 24 hours notice for cancellation of any scheduled appointments. Repeated no-shows may affect service eligibility.</p>
-                        <p><strong>6. Emergency:</strong> If you are experiencing a medical or psychiatric emergency, please call 911 or go to your nearest emergency room immediately.</p>
-                        <p><strong>7. Accuracy of Information:</strong> You agree that the information provided is accurate and complete to the best of your knowledge.</p>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                  {' '}*
-                </label>
-                <p className="font-body text-xs text-muted-foreground mt-1">
-                  Your information is protected under HIPAA regulations.
-                </p>
-              </div>
-            </div>
-
             <Button type="submit" disabled={sending} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full min-h-[52px] text-base">
               {sending ? 'Submitting...' : <>Submit Request <Send className="ml-2 w-4 h-4" /></>}
             </Button>
           </form>
         </motion.div>
+        )}
       </div>
     </section>
   );

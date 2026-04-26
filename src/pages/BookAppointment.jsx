@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import IntakeTermsGate from '../components/intake/IntakeTermsGate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,6 +14,7 @@ import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterv
 const timeSlots = ['9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'];
 
 export default function BookAppointment() {
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [step, setStep] = useState(1);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [form, setForm] = useState({
@@ -88,6 +90,11 @@ export default function BookAppointment() {
           </p>
         </motion.div>
 
+        {!termsAccepted && (
+          <IntakeTermsGate onAccept={() => setTermsAccepted(true)} />
+        )}
+
+        {termsAccepted && (<>
         {/* Step Indicator */}
         <div className="flex items-center justify-center gap-2 mb-12">
           {[1, 2, 3].map(s => (
@@ -295,6 +302,7 @@ export default function BookAppointment() {
             </motion.div>
           )}
         </AnimatePresence>
+        </>)}
       </div>
     </section>
   );
