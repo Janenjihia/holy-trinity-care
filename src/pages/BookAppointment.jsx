@@ -94,7 +94,8 @@ export default function BookAppointment() {
           <IntakeTermsGate onAccept={() => setTermsAccepted(true)} />
         )}
 
-        {termsAccepted && (<>
+        {termsAccepted && (
+        <>
         {/* Step Indicator */}
         <div className="flex items-center justify-center gap-2 mb-12">
           {[1, 2, 3].map(s => (
@@ -302,7 +303,8 @@ export default function BookAppointment() {
             </motion.div>
           )}
         </AnimatePresence>
-        </>)}
+        </>
+        )}
       </div>
     </section>
   );
