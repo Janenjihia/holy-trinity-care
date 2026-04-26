@@ -7,123 +7,139 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const slides = [
   {
     image: '/__generating__/img_c08e3818f1ab.png',
-    headline: 'A Place to Heal, A Promise to Care',
-    subtitle: 'Compassionate behavioral health and home care services for your complete wellness journey.',
   },
   {
     image: '/__generating__/img_aebab82dffa5.png',
-    headline: 'Comprehensive Behavioral Health Services',
-    subtitle: 'Supporting mental wellness for individuals and families. Encouraging lasting change.',
   },
   {
     image: '/__generating__/img_962aa94d900e.png',
-    headline: 'Your Recovery Begins Here',
-    subtitle: 'Evidence-based addiction treatment and recovery support tailored to your unique journey.',
   },
+];
+
+const stats = [
+  { value: '15+', label: 'Years Experience' },
+  { value: '500+', label: 'Lives Transformed' },
+  { value: '98%', label: 'Client Satisfaction' },
 ];
 
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setDirection(1);
       setCurrent(prev => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
   }, []);
 
-  const go = (idx) => {
-    setDirection(idx > current ? 1 : -1);
-    setCurrent(idx);
-  };
-
-  const prev = () => {
-    setDirection(-1);
-    setCurrent(prev => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const next = () => {
-    setDirection(1);
-    setCurrent(prev => (prev + 1) % slides.length);
-  };
+  const prev = () => setCurrent(prev => (prev - 1 + slides.length) % slides.length);
+  const next = () => setCurrent(prev => (prev + 1) % slides.length);
 
   return (
-    <section className="relative h-[90vh] min-h-[580px] overflow-hidden">
-      {/* Background Images */}
-      <AnimatePresence mode="sync" custom={direction}>
-        <motion.div
-          key={current}
-          custom={direction}
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: 'easeInOut' }}
-          className="absolute inset-0"
-        >
-          <img
-            src={slides[current].image}
-            alt=""
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-primary/55" />
-        </motion.div>
-      </AnimatePresence>
+    <section className="py-16 lg:py-24 bg-background">
+      <div className="max-w-[120rem] mx-auto px-6 lg:px-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
 
-      {/* Centered Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={current}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="max-w-3xl"
-          >
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-6xl text-white leading-[1.1] mb-5">
-              {slides[current].headline}
-            </h1>
-            <p className="text-white/80 text-base lg:text-lg font-body leading-relaxed mb-8 max-w-xl mx-auto">
-              {slides[current].subtitle}
-            </p>
-            <Link to="/request-services">
-              <Button className="bg-accent hover:bg-accent/90 text-accent-foreground font-body font-semibold rounded-full px-10 min-h-[52px] text-base shadow-lg">
-                Request Service Today
-              </Button>
-            </Link>
-          </motion.div>
-        </AnimatePresence>
+          {/* Left: Image Carousel */}
+          <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-[520px] shadow-xl">
+            <AnimatePresence mode="sync">
+              <motion.img
+                key={current}
+                src={slides[current].image}
+                alt="Holy Trinity Care"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1, ease: 'easeInOut' }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </AnimatePresence>
 
-        {/* Slide Indicators */}
-        <div className="flex gap-3 mt-10 absolute bottom-10">
-          {slides.map((_, i) => (
+            {/* Arrows */}
             <button
-              key={i}
-              onClick={() => go(i)}
-              className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'bg-white w-8' : 'bg-white/40 w-2 hover:bg-white/60'}`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+              onClick={prev}
+              aria-label="Previous slide"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/30 hover:bg-white/60 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
+            >
+              <ChevronLeft className="w-5 h-5 text-white" />
+            </button>
+            <button
+              onClick={next}
+              aria-label="Next slide"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/30 hover:bg-white/60 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
+            >
+              <ChevronRight className="w-5 h-5 text-white" />
+            </button>
+
+            {/* Dots */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrent(i)}
+                  className={`h-2 rounded-full transition-all duration-300 ${i === current ? 'bg-white w-6' : 'bg-white/50 w-2'}`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Content */}
+          <div className="flex flex-col justify-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="font-display text-3xl sm:text-4xl lg:text-5xl text-primary leading-[1.15] mb-5"
+            >
+              A Place to Heal,<br className="hidden sm:block" /> A Promise to Care
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="font-body text-muted-foreground leading-relaxed mb-8 text-sm lg:text-base"
+            >
+              At Holy Trinity Care, we provide a safe, structured, and supportive environment where individuals can begin their healing journey with confidence. Our approach combines clinical expertise with genuine compassion, ensuring that every patient receives personalized, evidence-based care. We are committed not only to helping individuals recover from trauma and life's challenges, but also to walking alongside them every step of the way, offering consistent support, dignity, and hope for lasting well-being.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="flex flex-wrap gap-3 mb-12"
+            >
+              <Link to="/request-services">
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-body font-semibold rounded-md px-7 min-h-[48px]">
+                  Request Services
+                </Button>
+              </Link>
+              <Link to="/about">
+                <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 font-body font-semibold rounded-md px-7 min-h-[48px]">
+                  Learn More
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="grid grid-cols-3 gap-4 pt-8 border-t border-border"
+            >
+              {stats.map(stat => (
+                <div key={stat.label} className="text-center">
+                  <p className="font-display text-2xl lg:text-3xl text-accent mb-1">{stat.value}</p>
+                  <p className="font-body text-xs text-muted-foreground">{stat.label}</p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
         </div>
       </div>
-
-      {/* Left / Right Arrows */}
-      <button
-        onClick={prev}
-        aria-label="Previous slide"
-        className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/35 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
-      >
-        <ChevronLeft className="w-6 h-6 text-white" />
-      </button>
-      <button
-        onClick={next}
-        aria-label="Next slide"
-        className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/35 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
-      >
-        <ChevronRight className="w-6 h-6 text-white" />
-      </button>
     </section>
   );
 }

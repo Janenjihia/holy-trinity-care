@@ -16,7 +16,6 @@ const navLinks = [
   },
   { label: 'Testimonials', path: '/testimonials' },
   { label: 'Contact', path: '/contact' },
-  { label: 'Location', path: '/location' },
 ];
 
 export default function Navbar() {
