@@ -15,6 +15,7 @@ const navLinks = [
     ]
   },
   { label: 'Testimonials', path: '/testimonials' },
+  { label: 'Location', path: '/location' },
   { label: 'Contact', path: '/contact' },
 ];
 
