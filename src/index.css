@@ -97,7 +97,7 @@
 
 /* Focus visible for accessibility */
 *:focus-visible {
-  outline: 3px solid hsl(18 55% 65%);
+  outline: 3px solid hsl(215 75% 55%);
   outline-offset: 2px;
   border-radius: 4px;
 }
