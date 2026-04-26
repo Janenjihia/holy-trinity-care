@@ -6,13 +6,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: '/__generating__/img_c08e3818f1ab.png',
+    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&auto=format&fit=crop',
   },
   {
-    image: '/__generating__/img_aebab82dffa5.png',
+    image: 'https://images.unsplash.com/photo-1590105577767-e21a1067899f?w=900&auto=format&fit=crop',
   },
   {
-    image: '/__generating__/img_962aa94d900e.png',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=900&auto=format&fit=crop',
   },
 ];
 
