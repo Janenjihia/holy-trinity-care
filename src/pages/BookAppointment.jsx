@@ -42,6 +42,11 @@ export default function BookAppointment() {
     e.preventDefault();
     setSending(true);
     await base44.entities.Appointment.create(form);
+    await base44.integrations.Core.SendEmail({
+      to: 'info@holytrinitycare.com',
+      subject: `New Appointment Request – ${form.full_name}`,
+      body: `A new appointment has been booked.\n\nName: ${form.full_name}\nEmail: ${form.email}\nPhone: ${form.phone}\nDate: ${form.date}\nTime: ${form.time_slot}\nService: ${form.service_type?.replace(/_/g, ' ')}\nSpecific Service: ${form.specific_service || 'N/A'}\nInsurance: ${form.insurance_provider || 'N/A'}\n\nAdditional Notes:\n${form.notes || 'None'}\n\nPlease log in to the Staff Dashboard to review this appointment.`,
+    });
     toast.success('Appointment booked successfully!');
     setSubmitted(true);
     setSending(false);

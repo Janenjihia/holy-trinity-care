@@ -81,6 +81,11 @@ export default function RequestServices() {
     e.preventDefault();
     setSending(true);
     await base44.entities.ServiceRequest.create(form);
+    await base44.integrations.Core.SendEmail({
+      to: 'info@holytrinitycare.com',
+      subject: `New Service Request – ${form.first_name} ${form.last_name}`,
+      body: `A new service request has been submitted.\n\nName: ${form.first_name} ${form.last_name}\nEmail: ${form.email}\nPhone: ${form.phone}\nDate of Birth: ${form.date_of_birth}\nAddress: ${form.street_address}${form.apt ? ' Apt ' + form.apt : ''}, ${form.city}, ${form.state} ${form.zip_code}\nPreferred Language: ${form.preferred_language}\nInsurance: ${form.insurance_provider} (ID: ${form.member_id})\nReferring Provider: ${form.referring_provider}\nPrimary Care Provider: ${form.primary_care_physician}\nHow They Heard About Us: ${form.how_did_you_hear}\n\nReasons for Visit:\n${form.reasons_for_visit.join(', ')}\n\nAdditional Details:\n${form.additional_details}\n\nThoughts of Suicide: ${form.thoughts_of_suicide}\nThoughts of Harming Others: ${form.thoughts_of_harming_others}\n\nPlease log in to the Staff Dashboard to review this request.`,
+    });
     toast.success('Your request has been submitted successfully!');
     setSubmitted(true);
     setSending(false);
