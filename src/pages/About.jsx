@@ -59,9 +59,7 @@ export default function About() {
         <div className="max-w-[120rem] mx-auto px-6 lg:px-12">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 max-w-5xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 1, y: 0 }}
               className="bg-card rounded-2xl p-8 lg:p-12 border border-border"
             >
               <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center mb-6">
@@ -73,10 +71,7 @@ export default function About() {
               </p>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.15 }}
+              initial={{ opacity: 1, y: 0 }}
               className="bg-card rounded-2xl p-8 lg:p-12 border border-border"
             >
               <div className="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-6">
@@ -102,10 +97,7 @@ export default function About() {
             {values.map((v, i) => (
               <motion.div
                 key={v.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                initial={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
                 <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
