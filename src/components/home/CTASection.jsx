@@ -13,9 +13,7 @@ export default function CTASection() {
 
       <div className="max-w-[120rem] mx-auto px-6 lg:px-12 relative z-10 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 1, y: 0 }}
         >
           <h2 className="font-display text-3xl lg:text-5xl text-primary-foreground mb-6">
             Schedule Your Appointment Today

@@ -31,17 +31,13 @@ export default function ServiceOverview() {
         {/* Header */}
         <div className="text-center mb-16">
           <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 1 }}
             className="text-accent font-body font-semibold text-sm tracking-widest uppercase mb-3"
           >
             Our Services
           </motion.p>
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 1, y: 0 }}
             className="font-display text-3xl lg:text-5xl text-foreground"
           >
             Comprehensive Care Programs
@@ -53,10 +49,7 @@ export default function ServiceOverview() {
           {services.map((service, i) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
+              initial={{ opacity: 1, y: 0 }}
               className={`grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${!service.imageLeft ? 'lg:[direction:rtl]' : ''}`}
             >
               {/* Image */}

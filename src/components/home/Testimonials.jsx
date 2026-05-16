@@ -27,17 +27,13 @@ export default function Testimonials() {
       <div className="max-w-[120rem] mx-auto px-6 lg:px-12 relative">
         <div className="text-center mb-16">
           <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 1 }}
             className="text-accent font-body font-semibold text-sm tracking-widest uppercase mb-4"
           >
             Testimonials
           </motion.p>
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 1, y: 0 }}
             className="font-display text-3xl lg:text-5xl text-foreground"
           >
             Voices of Hope
@@ -48,10 +44,7 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
+              initial={{ opacity: 1, y: 0 }}
               className="bg-card rounded-2xl p-8 lg:p-10 border border-border shadow-sm relative"
             >
               <Quote className="w-8 h-8 text-accent/20 absolute top-6 right-6" />

@@ -17,10 +17,7 @@ export default function ContactInfo() {
           {info.map((item, i) => (
             <motion.div
               key={item.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              initial={{ opacity: 1, y: 0 }}
               className="flex items-start gap-4"
             >
               <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
