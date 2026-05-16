@@ -42,18 +42,14 @@ export default function HeroCarousel() {
 
           {/* Left: Image Carousel */}
           <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-[520px] shadow-xl">
-            <AnimatePresence mode="sync">
-              <motion.img
-                key={current}
-                src={slides[current].image}
+            {slides.map((slide, i) => (
+              <img
+                key={i}
+                src={slide.image}
                 alt="Holy Trinity Care"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1, ease: 'easeInOut' }}
-                className="absolute inset-0 w-full h-full object-cover"
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === current ? 'opacity-100' : 'opacity-0'}`}
               />
-            </AnimatePresence>
+            ))}
 
             {/* Arrows */}
             <button
@@ -86,28 +82,19 @@ export default function HeroCarousel() {
 
           {/* Right: Content */}
           <div className="flex flex-col justify-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
+            <h1
               className="font-display text-3xl sm:text-4xl lg:text-5xl text-primary leading-[1.15] mb-5"
             >
               A Place to Heal,<br className="hidden sm:block" /> A Promise to Care
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
+            <p
               className="font-body text-muted-foreground leading-relaxed mb-8 text-sm lg:text-base"
             >
               At Holy Trinity Care, we provide a safe, structured, and supportive environment where individuals can begin their healing journey with confidence. Our approach combines clinical expertise with genuine compassion, ensuring that every patient receives personalized, evidence-based care. We are committed not only to helping individuals recover from trauma and life's challenges, but also to walking alongside them every step of the way, offering consistent support, dignity, and hope for lasting well-being.
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+            <div
               className="flex flex-wrap gap-3 mb-12"
             >
               <Link to="/request-services">
@@ -120,13 +107,10 @@ export default function HeroCarousel() {
                   Learn More
                 </Button>
               </Link>
-            </motion.div>
+            </div>
 
             {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
+            <div
               className="grid grid-cols-3 gap-4 pt-8 border-t border-border"
             >
               {stats.map(stat => (
@@ -135,7 +119,7 @@ export default function HeroCarousel() {
                   <p className="font-body text-xs text-muted-foreground">{stat.label}</p>
                 </div>
               ))}
-            </motion.div>
+            </div>
           </div>
 
         </div>
