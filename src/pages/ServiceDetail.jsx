@@ -136,7 +136,7 @@ export default function ServiceDetail() {
                 key={service.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0 }}
                 transition={{ delay: i * 0.1 }}
                 className="bg-card rounded-2xl p-8 border border-border"
               >
