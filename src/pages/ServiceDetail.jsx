@@ -132,12 +132,8 @@ export default function ServiceDetail() {
           </div>
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {data.services.map((service, i) => (
-              <motion.div
+              <div
                 key={service.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0 }}
-                transition={{ delay: i * 0.1 }}
                 className="bg-card rounded-2xl p-8 border border-border"
               >
                 <h3 className="font-display text-xl text-foreground mb-3">{service.name}</h3>
@@ -150,7 +146,7 @@ export default function ServiceDetail() {
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
